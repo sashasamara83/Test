@@ -24,7 +24,7 @@
         value: <organization>
       notify: restart slapd
 
-    - name: add user in LDAP
+    - name: add user1 in LDAP
       ldap_entry:
         dn: cn=<user1>,dc=<domain>,dc=com
         objectClass: posixAccount
@@ -37,13 +37,32 @@
         state: present
         attributes:
           - { key: loginShell, value: /bin/bash }
-
-    - name: add group in LDAP
+    - name: add user2 in LDAP
+      ldap_entry:
+        dn: cn=<user2>,dc=<domain>,dc=com
+        objectClass: posixAccount
+        cn: <user2>
+        uid: <user2>
+        uidNumber: 10001
+        gidNumber: 10001
+        homeDirectory: /home/<user2>
+        userPassword: <user2_password>
+        state: present
+        attributes:
+          - { key: loginShell, value: /bin/bash }        
+    - name: add group1 in LDAP
       ldap_entry:
         dn: cn=<group1>,dc=<domain>,dc=com
         objectClass: posixGroup
         cn: <group1>
         gidNumber: 10000
+        state: present 
+    - name: add group2 in LDAP
+      ldap_entry:
+        dn: cn=<group2>,dc=<domain>,dc=com
+        objectClass: posixGroup
+        cn: <group2>
+        gidNumber: 10001
         state: present
 
   handlers:

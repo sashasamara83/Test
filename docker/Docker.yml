@@ -1,0 +1,106 @@
+version: '3'
+services:
+  node1:
+    image: datastax/dse-server:6.8.35-ubi7
+    container_name: DSE-6_node1
+    hostname: node1
+    networks:
+      dc1ring: # Определение сети dc1ring для первого узла
+        ipv4_address: 172.30.0.2 # Назначение статического IP-адреса для первого узла
+    volumes:
+      - ./musicdb:/opt/dse/musicdb # Привязка локальной папки ./musicdb к папке внутри контейнера
+    environment:
+      - DS_LICENSE=accept
+      - SEEDS=node1 # Seed-узел для кластера Cassandra
+      - START_RPC=false
+      - CLUSTER_NAME=dse51_cluster # Имя кластера
+      - NUM_TOKENS=3
+      - DC=DC1 # Имя данных центра
+      - RACK=RAC1 # Имя стойки
+      - MAX_HEAP_SIZE=1000000000 # Максимальный размер кучи
+    expose:
+      - 7000 # Порт для внутреннего узла связи
+      - 7001 # Порт для защищенной внутренней связи
+      - 7199 # Порт JMX
+      - 9042 # Порт для CQL-запросов
+      - 9142 # Порт для CQL-запросов через SSL
+    ports:
+      - 9042:9042 # Проброс порта: внешний порт:внутренний порт (доступ к CQL-запросам через порт 9042)
+    ulimits:
+      memlock: -1
+      nproc: 32768
+      nofile: 100000
+
+  node2:
+    image: datastax/dse-server:6.8.35-ubi7
+    container_name: DSE-6_node2
+    hostname: node2
+    networks:
+      dc1ring: # Определение сети dc1ring для второго узла
+        ipv4_address: 172.30.0.3 # Назначение статического IP-адреса для второго узла
+    volumes:
+      - ./musicdb:/opt/dse/musicdb # Привязка локальной папки ./musicdb к папке внутри контейнера
+    environment:
+      - DS_LICENSE=accept
+      - SEEDS=node1 # Seed-узел для кластера Cassandra
+      - START_RPC=false
+      - CLUSTER_NAME=dse51_cluster # Имя кластера
+      - NUM_TOKENS=3
+      - DC=DC2 # Имя данных центра
+      - RACK=RAC1 # Имя стойки
+      - MAX_HEAP_SIZE=1000000000 # Максимальный размер кучи
+    expose:
+      - 7000 # Порт для внутреннего узла связи
+      - 7001 # Порт для
+      - 7199 # Порт JMX
+      - 9042 # Порт для CQL-запросов
+      - 9142 # Порт для CQL-запросов через SSL
+    ports:
+      - 9043:9042 # Проброс порта: внешний порт:внутренний порт (доступ к CQL-запросам через порт 9043)
+    ulimits:
+      memlock: -1
+      nproc: 32768
+      nofile: 100000
+    depends_on:
+      - node1 # Зависимость от запуска узла node1 (дождаться запуска узла node1 перед запуском узла node2)
+
+  node3:
+    image: datastax/dse-server:6.8.35-ubi7
+    container_name: DSE-6_node3
+    hostname: node3
+    networks:
+      dc1ring: # Определение сети dc1ring для третьего узла
+        ipv4_address: 172.30.0.4 # Назначение статического IP-адреса для третьего узла
+    volumes:
+      - ./musicdb:/opt/dse/musicdb # Привязка локальной папки ./musicdb к папке внутри контейнера
+    environment:
+      - DS_LICENSE=accept
+      - SEEDS=node1 # Seed-узел для кластера Cassandra
+      - START_RPC=false
+      - CLUSTER_NAME=dse51_cluster # Имя кластера
+      - NUM_TOKENS=3
+      - DC=DC1 # Имя данных центра
+      - RACK=RAC1 # Имя стойки
+      - MAX_HEAP_SIZE=1000000000 # Максимальный размер кучи
+    expose:
+      - 7000 # Порт для внутреннего узла связи
+      - 7001 # Порт для защищенной внутренней связи
+      - 7199 # Порт JMX
+      - 9042 # Порт для CQL-запросов
+      - 9142 # Порт для CQL-запросов через SSL
+    ports:
+      - 9044:9042 # Проброс порта: внешний порт:внутренний порт (доступ к CQL-запросам через порт 9044)
+    ulimits:
+      memlock: -1
+      nproc: 32768
+      nofile: 100000
+    depends_on:
+      - node1 # Зависимость от запуска узла node1 (дождаться запуска узла node1 перед запуском узла node3)
+
+networks:
+  dc1ring: # Определение сети dc1ring
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.30.0.0/16 # Назначение подсети для сети dc1ring
+		

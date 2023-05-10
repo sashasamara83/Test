@@ -1,0 +1,54 @@
+---
+- name: install OpenLDAP server
+  hosts: all
+  become: true
+
+  tasks:
+    - name: install packages OpenLDAP 
+      apt:
+        name: slapd ldap-utils
+        state: present
+
+    - name: setting admin password
+      debconf:
+        name: slapd
+        question: slapd/password1
+        value: <admin_password>
+        vtype: password
+      notify: restart slapd
+
+    - name: setting domain and organization
+      debconf:
+        name: slapd
+        question: slapd/organization
+        value: <organization>
+      notify: restart slapd
+
+    - name: add user in LDAP
+      ldap_entry:
+        dn: cn=<user1>,dc=<domain>,dc=com
+        objectClass: posixAccount
+        cn: <user1>
+        uid: <user1>
+        uidNumber: 10000
+        gidNumber: 10000
+        homeDirectory: /home/<user1>
+        userPassword: <user1_password>
+        state: present
+        attributes:
+          - { key: loginShell, value: /bin/bash }
+
+    - name: add group in LDAP
+      ldap_entry:
+        dn: cn=<group1>,dc=<domain>,dc=com
+        objectClass: posixGroup
+        cn: <group1>
+        gidNumber: 10000
+        state: present
+
+  handlers:
+    - name: restart slapd
+      service:
+        name: slapd
+        state: restarted
+...

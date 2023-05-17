@@ -8,7 +8,7 @@ services:
       dc1ring: # Определение сети dc1ring для первого узла
         ipv4_address: 172.30.0.2 # Назначение статического IP-адреса для первого узла
     volumes:
-      - ./musicdb:/opt/dse/musicdb # Привязка локальной папки ./musicdb к папке внутри контейнера
+      - ./data:/data # Привязка локальной папки ./data к папке внутри контейнера
     environment:
       - DS_LICENSE=accept
       - SEEDS=node1 # Seed-узел для кластера Cassandra
@@ -39,7 +39,7 @@ services:
       dc1ring: # Определение сети dc1ring для второго узла
         ipv4_address: 172.30.0.3 # Назначение статического IP-адреса для второго узла
     volumes:
-      - ./musicdb:/opt/dse/musicdb # Привязка локальной папки ./musicdb к папке внутри контейнера
+      - ./data:/data # Привязка локальной папки ./data к папке внутри контейнера
     environment:
       - DS_LICENSE=accept
       - SEEDS=node1 # Seed-узел для кластера Cassandra
@@ -72,7 +72,7 @@ services:
       dc1ring: # Определение сети dc1ring для третьего узла
         ipv4_address: 172.30.0.4 # Назначение статического IP-адреса для третьего узла
     volumes:
-      - ./musicdb:/opt/dse/musicdb # Привязка локальной папки ./musicdb к папке внутри контейнера
+      - ./data:/data # Привязка локальной папки ./data к папке внутри контейнера
     environment:
       - DS_LICENSE=accept
       - SEEDS=node1 # Seed-узел для кластера Cassandra

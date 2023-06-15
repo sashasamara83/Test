@@ -7,6 +7,9 @@ services:
     networks:
       dc1ring: # Определение сети dc1ring для первого узла
         ipv4_address: 172.30.0.2 # Назначение статического IP-адреса для первого узла
+	driver: macvlan # Использование macvlan-драйвера для создания сети
+        driver_opts:
+          parent: eth0 # Указание родительского интерфейса
     volumes:
       - ./data:/data # Привязка локальной папки ./data к папке внутри контейнера
     environment:
@@ -38,6 +41,9 @@ services:
     networks:
       dc1ring: # Определение сети dc1ring для второго узла
         ipv4_address: 172.30.0.3 # Назначение статического IP-адреса для второго узла
+	driver: macvlan
+        driver_opts:
+          parent: eth0
     volumes:
       - ./data:/data # Привязка локальной папки ./data к папке внутри контейнера
     environment:
@@ -71,6 +77,9 @@ services:
     networks:
       dc1ring: # Определение сети dc1ring для третьего узла
         ipv4_address: 172.30.0.4 # Назначение статического IP-адреса для третьего узла
+	river: macvlan
+        driver_opts:
+          parent: eth0
     volumes:
       - ./data:/data # Привязка локальной папки ./data к папке внутри контейнера
     environment:

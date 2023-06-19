@@ -1,12 +1,16 @@
 version: '3'
 services:
-  cqlsh:
-    image: datastax/dse-tools:6.8.16-ubi7 # Контейнер cqlsh образ datastax/dse-tools:6.8.16-ubi7
-    container_name: CQLSH # имя контейнера CQLSH
-    command: cqlsh node2 # подлючения к узлу node2
+  cqlsh1:
+    image: datastax/dse-tools:6.8.16-ubi7
+    container_name: cqlsh1
+    command: cqlsh <IP контейнера  на машине A>
+   
+  cqlsh2:
+    image: datastax/dse-tools:6.8.16-ubi7
+    container_name: cqlsh2
+    command: cqlsh <IP контейнера на машине A>
     
-    
-networks:
-  default:
-    external:
-      name: bridge	
+  cqlsh3:
+    image: datastax/dse-tools:6.8.16-ubi7
+    container_name: cqlsh3
+    command: cqlsh <IP контейнера на машине A>
